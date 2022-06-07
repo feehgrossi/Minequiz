@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minequiz</title>
+    <link rel="icon" href="img/icons8-minecraft-grass-cube-480.png">
+    <link id="tema" rel="stylesheet" href="claro.css">
+    <script src="../js/funcoes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+</head>
+
+<body onload="validarSessao();">
+
+    <div class="janela">
+        <div class="esquerda">
+            <h1>Minequiz</h1>
+
+            <div class="esquerdaImg">
+                <img src="img/icons8-minecraft-grass-cube-480.png" alt="">
+            </div>
+
+            <div class="hello">
+                <h3>Ola, <span id="b_usuario">user</span>!</h3>
+            </div>
+
+            <div class="btn-nav">
+                <a href="cards.html">
+                    <h3 class="selected">Home</h3>
+                </a>
+            </div>
+
+            <div class="btn-nav">
+                <details>
+                    <summary>Tema</summary>
+                    <a onclick="tema_escuro()">Escuro</a><br>
+                    <a onclick="tema_claro()">Claro</a><br>
+                </details>
+            </div>
+
+            <div class="btn-nav">
+                <h3 onclick="forum()">Postagens</h3>
+            </div>
+
+            <div class="btn-logout" onclick="limparSessao()">
+                <h3>Sair</h3>
+            </div>
+        </div>
+
+
+
+        <div class="social">
+
+
+
+            <div class="fundo" id="fundo">
+                    <img src="img/logo mine.png" alt="">
+                <div class="alinhamento">
+                    <div id="comeco" style="display: block;">
+                        <h3>Bem vindo ao minequiz, aqui voce pode encontrar jogadores, testar seus conhecimentos
+                            e se juntar a comunidade na nossa pagina de postagens
+                        </h3>
+    
+                        <button class="box" onclick="introducao()">Iniciar Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quiz" style="display: none;">
+                    <section>
+                        <article class='questoes'>
+
+                            <header class='questao'>
+                                <span style="display: none;" id='numQuestao'></span>
+                                <h2 id='pergunta'></h2>
+                            </header>
+
+                            <div class='corpo'>
+                                <ol type='A' id='alternativas'>
+                                    <li id='a' value='1A' class='box' onClick='verificarSeAcertou(this, this)'>
+                                    </li>
+                                    <li id='b' value='1B' class='box' onClick='verificarSeAcertou(this, this)'>
+                                    </li>
+                                    <li id='c' value='1C' class='box' onClick='verificarSeAcertou(this, this)'>
+                                    </li>
+                                    <li id='d' value='1D' class='box' onClick='verificarSeAcertou(this, this)'>
+                                    </li>
+                                </ol>
+                            </div>
+                        </article>
+
+                        <article id='aviso' class='centro'>
+                            <span id='numero'></span> de <span id='total'></span>
+                        </article>
+
+                        <article class='centro' id='instrucoes'>
+                            Leia a questao e clique na resposta correta
+                        </article>
+                    </section>
+
+                    <audio preload src="Musicas/minecraft_xp_sound.mp3" id='somAcerto'></audio>
+                    <audio preload src="Musicas/classic_hurt.mp3" id='somErro'></audio>
+                    <audio preload src="Musicas/Minecraft 1.4 Enderdragon Death Sound.mp3" id='somAplausos'></audio>
+                </div>
+
+                <div>
+                    <canvas id="myChart" style="display: none;"></canvas>
+                </div>
+            </div>
+
+            <div id="postagens" style="display: none;">
+                <div class="avisos">
+                    <div class="container">
+                        <h1>Compartilhe suas aventuras</h1>
+                        <div class="div-form">
+                            <form id="form_postagem" method="post" onsubmit="return publicar()">
+                                <label>
+                                    Titulo:
+                                    <br>
+                                    <input name="titulo" id="titulo" maxlength="100" type="text">
+                                </label>
+                                <br>
+                                <label>
+                                    Descrição (maximo de 250 caracteres):
+                                    <br>
+                                    <textarea name="descricao" id="textarea_descricao" maxlength="250"
+                                        rows="5"></textarea>
+                                </label>
+                                <br>
+                                <button class="box">Enviar</button>
+                            </form>
+                            <button class="box" onclick="atualizarFeed()">Atualizar feed</button>
+                        </div>
+                        <h1>feed</h1>
+                        <div class="div-results">
+                            <div id="feed_container" class="feed-container">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+
+<script>
+
+    var idUsuario = sessionStorage.ID_USUARIO;
+
+    var titulo = document.getElementById('titulo')
+    var instrucoes = document.querySelector('#instrucoes')
+    var aviso = document.querySelector('#aviso')
+    var progresso = document.querySelector('#progresso')
+    var pontos = 0 // pontos para o placar
+    var placar = 0 // placar
+
+    // AUDIO
+    var somAcerto = document.querySelector('#somAcerto')
+    var somErro = document.querySelector('#somErro')
+    var somAplausos = document.querySelector('#somAplausos')
+
+    // PERGUNTA
+    var numQuestao = document.querySelector('#numQuestao')
+    var pergunta = document.querySelector('#pergunta')
+
+    // ALTERNATIVAS
+    var a = document.querySelector('#a')
+    var b = document.querySelector('#b')
+    var c = document.querySelector('#c')
+    var d = document.querySelector('#d')
+
+    // article com a class questoes
+    var articleQuestoes = document.querySelector('.questoes')
+    // ol li com as alternativas
+    var alternativas = document.querySelector('#alternativas')
+
+    const q0 = {
+        numQuestao: 0,
+        pergunta: "Pergunta",
+        alternativaA: "Alternativa A",
+        alternativaB: "Alternativa B",
+        alternativaC: "Alternativa C",
+        alternativaD: "Alternativa D",
+        correta: "0",
+    }
+    const q1 = {
+        numQuestao: 1,
+        pergunta: "Qual mob protege o templo do mar?",
+        alternativaA: "Guardian",
+        alternativaB: "Porco",
+        alternativaC: "Phantom",
+        alternativaD: "Pillager",
+        correta: "Guardian",
+    }
+    const q2 = {
+        numQuestao: 2,
+        pergunta: "Quantas obsidians ao nescessarias para criar um portal do nether?",
+        alternativaA: "8",
+        alternativaB: "10",
+        alternativaC: "12",
+        alternativaD: "14",
+        correta: "10",
+    }
+    const q3 = {
+        numQuestao: 3,
+        pergunta: "Qual mob dropa a perola do fim?",
+        alternativaA: "Ender Dragon",
+        alternativaB: "Whither",
+        alternativaC: "Enderman",
+        alternativaD: "Endermit",
+        correta: "Enderman",
+    }
+    const q4 = {
+        numQuestao: 4,
+        pergunta: "Quantas madeiras sao nescessarias para criar uma workband",
+        alternativaA: "1",
+        alternativaB: "4",
+        alternativaC: "2",
+        alternativaD: "nenhuma",
+        correta: "1",
+    }
+    const q5 = {
+        numQuestao: 5,
+        pergunta: "Qual mob vira um afogado apos entrar na agua?",
+        alternativaA: "Porco",
+        alternativaB: "Bruxa",
+        alternativaC: "Esqueleto",
+        alternativaD: "Zumbi",
+        correta: "Zumbi",
+    }
+    const q6 = {
+        numQuestao: 6,
+        pergunta: "Mob droppa ferro?",
+        alternativaA: "Irom Golem",
+        alternativaB: "Villager",
+        alternativaC: "Galinha",
+        alternativaD: "Pillager",
+        correta: "Irom Golem",
+    }
+    const q7 = {
+        numQuestao: 7,
+        pergunta: "Qual o item nescessario para marcar spawn?",
+        alternativaA: "Casa",
+        alternativaB: "Spawner",
+        alternativaC: "Cama",
+        alternativaD: "Fornalha",
+        correta: "Cama",
+    }
+    const q8 = {
+        numQuestao: 8,
+        pergunta: "Qual o minerio mais raro do jogo?",
+        alternativaA: "Ouro",
+        alternativaB: "Netherite",
+        alternativaC: "Diamante",
+        alternativaD: "Esmeralda",
+        correta: "Netherite",
+    }
+    const q9 = {
+        numQuestao: 9,
+        pergunta: "Qual a comida mais nutritiva do jogo?",
+        alternativaA: "Maca encantada",
+        alternativaB: "Maca dourada",
+        alternativaC: "Cenoura dourada",
+        alternativaD: "Melancia dourada",
+        correta: "Cenoura dourada",
+    }
+    const q10 = {
+        numQuestao: 10,
+        pergunta: "Em que ano o jogo foi lancado?",
+        alternativaA: "2010",
+        alternativaB: "2011",
+        alternativaC: "2009",
+        alternativaD: "2008",
+        correta: "2009",
+    }
+
+    // CONSTANTE COM UM ARRAY DE OBJETOS COM TODAS AS QUESTOES
+    const questoes = [q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10]
+
+    var numero = document.querySelector('#numero')
+    var total = document.querySelector('#total')
+
+    numero.textContent = q1.numQuestao
+
+    var totalDeQuestoes = (questoes.length) - 1
+    console.log("Total de questões " + totalDeQuestoes)
+    total.textContent = totalDeQuestoes
+
+    // MONTAR A 1a QUESTAO COMPvarA, para iniciar o Quiz
+    numQuestao.textContent = q1.numQuestao
+    pergunta.textContent = q1.pergunta
+    a.textContent = q1.alternativaA
+    b.textContent = q1.alternativaB
+    c.textContent = q1.alternativaC
+    d.textContent = q1.alternativaD
+
+    // CONFIGURAR O VALUE INICIAL DA 1a QUESTAO COMPvarA
+    a.setAttribute('value', '1A')
+    b.setAttribute('value', '1B')
+    c.setAttribute('value', '1C')
+    d.setAttribute('value', '1D')
+
+    // PARA MONTAR AS PROXIMAS QUESTOES
+    function proximaQuestao(nQuestao) {
+        numero.textContent = nQuestao
+        numQuestao.textContent = questoes[nQuestao].numQuestao
+        pergunta.textContent = questoes[nQuestao].pergunta
+        a.textContent = questoes[nQuestao].alternativaA
+        b.textContent = questoes[nQuestao].alternativaB
+        c.textContent = questoes[nQuestao].alternativaC
+        d.textContent = questoes[nQuestao].alternativaD
+        a.setAttribute('value', nQuestao + 'A')
+        b.setAttribute('value', nQuestao + 'B')
+        c.setAttribute('value', nQuestao + 'C')
+        d.setAttribute('value', nQuestao + 'D')
+        // progresso.value = parseInt(progresso.value) + 1
+        //console.log(progresso.value)
+    }
+
+    // VERIFICAR DUPLO CLICK NAS ALTERNATIVAS
+    alternativas.addEventListener('dblclick', () => {
+        //console.log('Duplo clique')
+        pontos -= 10 // tirar 10 pontos em caso de duplo click
+        if (numQuestao.value == 10 && pontos == 110) { pontos = 100 }
+    })
+
+    function bloquearAlternativas() {
+        alternativas.classList.add('bloqueado')
+    }
+
+    function desbloquearAlternativas() {
+        alternativas.classList.remove('bloqueado')
+    }
+
+    function piscarNoAcerto() {
+        articleQuestoes.classList.remove('errou')
+        articleQuestoes.classList.add('acertou')
+    }
+
+    function piscarNoErro() {
+        articleQuestoes.classList.remove('acertou')
+        articleQuestoes.classList.add('errou')
+    }
+
+    function tirarPiscar() {
+        articleQuestoes.classList.remove('acertou')
+        articleQuestoes.classList.remove('errou')
+    }
+
+    function verificarSeAcertou(nQuestao, resposta) {
+
+        var numeroDaQuestao = nQuestao.value
+        console.log("Questão " + numeroDaQuestao)
+
+        var respostaEscolhida = resposta.textContent
+        //console.log("RespU " + respostaEscolhida)
+
+        var certa = questoes[numeroDaQuestao].correta
+        //console.log("RespC " + certa)
+
+        if (respostaEscolhida == certa) {
+            //console.log("Acertou")
+            //respostaEsta.textContent = "Correta 😊"
+            piscarNoAcerto()
+            somAcerto.play()
+            pontos += 10 // pontos = pontos + 10
+            if (nQuestao.value == 1 && pontos == 20) { pontos = 10 }
+        } else {
+            //console.log("Errou!")
+            //respostaEsta.textContent = "Errada 😢"
+            piscarNoErro()
+            somErro.play()
+        }
+        setTimeout(() => {
+            tirarPiscar()
+        }, 150);
+
+        // atualizar placar
+        placar = pontos
+        instrucoes.textContent = "Pontos " + placar
+
+        // bloquear a escolha de opcoes
+        bloquearAlternativas()
+
+        setTimeout(function () {
+
+            proxima = numeroDaQuestao + 1
+
+            if (proxima > totalDeQuestoes) {
+                console.log('Fim do Jogo!')
+                fimDoJogo()
+            } else {
+                proximaQuestao(proxima)
+            }
+        }, 150)
+        desbloquearAlternativas()
+    }
+
+    function fimDoJogo() {
+
+        somAplausos.play()
+
+        var s = 's'
+        pontos == 0 ? s = '' : s = s
+        instrucoes.textContent = "Fim de Jogo! Você conseguiu " + pontos + " pontos"
+
+        instrucoes.classList.add('placar')
+
+        // OCULTAR O article DA QUESTAO
+        articleQuestoes.style.display = 'none'
+
+        salvarPontuacao();
+
+        setTimeout(function () {
+
+            //location.reload();
+            instrucoes.classList.remove('placar')
+            // REINICIAR O JOGO
+            articleQuestoes.style.display = 'block'
+            proximaQuestao(1)
+            instrucoes.textContent = 'Leia a questão e clique na resposta correta'
+            recuperarPontuacao()
+        }, 14000)
+    }
+
+    function salvarPontuacao() {
+        fetch("/usuarios/salvarPontuacao", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                idUsuario: idUsuario,
+                pontoServer: pontos
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                alert('Sua pontuação foi salva');
+                pontos = 0;
+            } else {
+                throw ("Houve um erro ao salvar sua pontuação!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+
+        });
+
+
+    }
+
+    function recuperarPontuacao() {
+
+        quiz.style.display = 'none';
+        myChart.style.display = 'block';
+
+        fetch("/usuarios/recuperarPontuacao", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                console.log('Sua pontuação foi resgatada');
+
+                resposta.json().then(json => {
+                    const labels = [
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                    ];
+
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [`${json[3].nomeCliente}`, `${json[1].nomeCliente}`, `${json[0].nomeCliente}`, `${json[2].nomeCliente}`, `${json[4].nomeCliente}`],
+                            datasets: [{
+                                label: 'Pontuações',
+                                data: [`${json[3].Pontuacao}`, `${json[1].Pontuacao}`, `${json[0].Pontuacao}`, `${json[2].Pontuacao}`, `${json[4].Pontuacao}`],
+                                backgroundColor: [
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)'
+                                ],
+                                borderColor: [
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)',
+                                    'rgb(107, 195, 73)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+
+            } else {
+                throw ("Houve um erro ao resgatar sua pontuação!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+
+        });
+
+    }
+
+    // Postagens
+    function limparFormulario() {
+        document.getElementById("form_postagem").reset();
+    }
+
+    function publicar() {
+        var idUsuario = sessionStorage.ID_USUARIO;
+        var varTitulo = titulo.value;
+        var varDescricao = textarea_descricao.value
+
+        fetch(`/avisos/publicar`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idServer: idUsuario,
+                tituloServer: varTitulo,
+                descricaoServer: varDescricao
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                window.alert("Post realizado com sucesso pelo usuario de ID: " + idUsuario + "!");
+                // window.location = "/dashboard/cards.html";
+                // limparFormulario();
+                // finalizarAguardar();
+            } else if (resposta.status == 404) {
+                window.alert("Deu 404!");
+            } else {
+                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            // finalizarAguardar();
+        });
+
+        return false;
+
+    }
+
+    function atualizarFeed() {
+        fetch("/avisos/listar").then(function (resposta) {
+            if (resposta.ok) {
+                if (resposta.status == 204) {
+                    var feed = document.getElementById("feed_container");
+                    var mensagem = document.createElement("span");
+                    mensagem.innerHTML = "Nenhum resultado encontrado."
+                    feed.appendChild(mensagem);
+                    throw "Nenhum resultado encontrado!!";
+                }
+                else {
+
+                    resposta.json().then(function (resposta) {
+                        console.log("Dados recebidos: ", JSON.stringify(resposta));
+
+                        var feed = document.getElementById("feed_container");
+                        feed.innerHTML = "";
+                        for (let i = 0; i < resposta.length; i++) {
+                            var publicacao = resposta[i];
+
+                            // criando e manipulando elementos do HTML via JavaScript
+                            var divPublicacao = document.createElement("div");
+                            var spanTitulo = document.createElement("span");
+                            var spanNome = document.createElement("span");
+                            var divDescricao = document.createElement("div");
+                            var divButtons = document.createElement("div");
+                            
+
+
+                            
+                            spanTitulo.innerHTML = " <br> Titulo: <b>" + publicacao.titulo + "</b>";
+                            spanNome.innerHTML = "Autor: <b>" + publicacao.nome + "</b>";
+                            divDescricao.innerHTML = "Descrica                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          o: <b>" + publicacao.descricao + "</b> <br><br><br>";
+                            
+
+                            divPublicacao.className = "publicacao";
+                            spanTitulo.id = "inputNumero" + publicacao.idAviso;
+                            spanNome.className = "publicacao-nome";
+                            spanTitulo.className = "publicacao-titulo";
+                            divDescricao.className = "publicacao-descricao";
+
+                            divButtons.className = "div-buttons"
+
+                    
+
+                            
+                            divPublicacao.appendChild(spanNome);
+                            divPublicacao.appendChild(spanTitulo);
+                            divPublicacao.appendChild(divDescricao);
+                            divPublicacao.appendChild(divButtons);
+                            feed.appendChild(divPublicacao);
+                        }
+                        // finalizarAguardar();
+                    })
+                };
+            } else {
+                throw ('Houve um erro na API!');
+            }
+        }).catch(function (resposta) {
+            console.error(resposta);
+            // finalizarAguardar();
+        });
+    }
+
+    function testar() {
+        // aguardar();
+
+        var formulario = new URLSearchParams(new FormData(document.getElementById("form_postagem")));
+
+        var divResultado = document.getElementById("div_feed");
+
+        divResultado.appendChild(document.createTextNode(formulario.get("descricao")));
+        divResultado.innerHTML = formulario.get("descricao");
+
+        // finalizarAguardar();
+
+        return false;
+    }
+
+    // tema claro e escuro
+    function introducao() {
+        quiz.style.display = 'block';
+        comeco.style.display = 'none';
+    }
+
+    function forum() {
+        fundo.style.display='none';
+        postagens.style.display='block';
+        atualizarFeed()
+
+    }
+
+
+    function tema_escuro() {
+        tema.href = 'escuro.css'
+    }
+
+    function tema_claro() {
+        tema.href = 'claro.css'
+    }
+
+</script>
+
+</html>

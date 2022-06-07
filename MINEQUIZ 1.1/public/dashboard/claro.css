@@ -1,0 +1,399 @@
+@font-face {
+    font-family: 'mine';
+    src: url('Minecraft.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-image: url('img/birch-forest.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: 'mine';
+    margin: 0;
+}
+
+.janela {
+    display: grid;
+    grid-template-columns: 2fr 7fr;
+}
+
+details>summary {
+    list-style: none;
+}
+
+.esquerda {
+    /* Características da separação do lado esquerdo */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    clip-path: inset(0px -15px 0px 0px);
+    height: 593px;
+    padding: 32px;
+    background-color: rgb(107, 195, 73);
+    text-shadow: 0.1em 0.1em 0.05em #333;
+    
+}
+
+.hello {
+    text-align: center;
+    padding-bottom: 32px;
+    color: #fff;
+}
+
+.esquerda h1 {
+    display: table;
+    margin: 0 auto;
+    padding: 16px;
+    color: #fff;
+}
+
+.esquerdaImg img {
+    display: table;
+    margin: 0 auto;
+    width: 50%;
+}
+
+.esquerda .btn-nav details {
+    font-size: 1.17em;
+}
+
+.esquerda .btn-nav a,
+.esquerda .btn-nav {
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+}
+
+.esquerda .btn-nav details a {
+    padding: 4px 0px 0px 16px;
+    color: #fff;
+}
+
+.avisos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.esquerda .btn-nav a:hover, summary:hover {
+    text-decoration: underline;
+}
+
+.esquerda .btn-nav .selected {
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.esquerda .btn-logout h3 {
+    color: #fff;
+}
+
+
+.social{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quiz{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fundo{
+    background-color: white;
+    width: 800px;
+    height: 600px;
+    border-radius: 16px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    
+
+}
+
+.alinhamento{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.alinhamento .box{
+    margin-left: 300px;
+}
+
+.fundo img{
+    width: 300px;
+    display: flex;
+    align-items: flex-start;
+}
+
+#postagens{
+        background-color: white;
+        width: 800px;
+        height: 600px;
+        border-radius: 16px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+}
+
+#postagens ::-webkit-scrollbar-track {
+    background-color: whitesmoke;
+}
+
+#postagens ::-webkit-scrollbar {
+    width: 12px;
+}
+  
+#postagens ::-webkit-scrollbar-thumb {
+    background: rgb(107, 195, 73);
+    /* border-radius: 16px; */
+}
+
+.alternativas{
+    display: flex;
+    flex-direction: row;
+}
+
+.box{
+    background-color: rgb(107, 195, 73);
+    height: 40px;
+    width: 170px;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'mine';
+    margin-top: 50px;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+    padding: 0px;
+    border-radius: 24px;
+    margin: 5px;
+    border: none;
+}
+
+.corpo ol{
+    display: flex;
+    flex-direction: row;
+}
+
+.questao{
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#game img{
+    width: 400px;
+    border-radius: 24px;
+}
+
+#introducao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#introducao h3{
+    width: 500px;
+    height: 200px;
+}
+
+#introducao img{
+    width: 400px;
+    justify-content: center;
+    justify-items: center;
+}
+
+#introducao button{
+    background-color:   rgb(107, 195, 73);
+    color: white;
+    font-family: 'mine';
+    text-shadow: 0.1em 0.1em 0.05em rgb(0, 0, 0);
+    width: 400px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 24px;
+    align-items: center;
+    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+}
+
+#comeco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#comeco h3{
+    margin-left: 70px;
+}
+
+#fim button{
+    background-color:   rgb(107, 195, 73);
+    color: white;
+    font-family: 'mine';
+    text-shadow: 0.1em 0.1em 0.05em rgb(0, 0, 0);
+    width: 400px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 24px;
+    align-items: center;
+    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+}
+
+/* article que acomoda a questao completa */
+.questoes {
+    user-select: none;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.questoes ol li:hover {
+    background: var(--principal);
+    cursor: pointer;
+}
+
+.bloqueado {
+    display: none;
+}
+
+.bloqueado li:hover {
+    display: none;
+}
+
+#instrucoes {
+    font-size: 1rem;
+    color: #191919;
+    padding: 0.625rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#aviso {
+    color: var(--principal);
+}
+
+#autoria {
+    margin-top: 0.625rem;
+    font-size: 0.75rem;
+}
+
+.centro {
+    text-align: center;
+}
+
+/* ANIMACAO */
+
+/* Animar o input */
+@keyframes piscar {
+    0% {
+        filter: drop-shadow(0 0 15px var(--principal));
+        -webkit-filter: drop-shadow(0 0 15px var(--principal));
+        -moz-filter: drop-shadow(0 0 15px var(--principal));
+        -o-filter: drop-shadow(0 0 15px var(--principal));
+        -ms-filter: drop-shadow(0 0 15px var(--principal));
+    }
+    100% {
+    }
+}
+
+.animar {
+    animation: piscar .75s infinite alternate;
+}
+
+.aparecer {
+    animation: aparecer .5s infinite alternate;
+}
+
+@keyframes aparecer {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.acertou {
+    background: var(--verde);
+    animation: aparecer 0.1s infinite alternate;
+}
+
+.errou {
+    background: var(--vermelho);
+    animation: aparecer 0.1s infinite alternate;
+}
+
+.placar {
+    padding: 1rem;
+    border-radius: 8px;
+    background:#03a9f4;
+    font-size: 2rem;
+}
+
+/* post */
+#titulo {
+    font-family: 'mine';
+}
+
+#textarea_descricao{
+    font-family: 'mine';
+    width: 500px;
+}
+
+/* Grafico */
+
+canvas{
+    height: 400px;
+    width: 100%;
+    padding: 24px;
+}
+
+/* vermelho #f44336 ou #d50000 verde #4caf50 ou #1b5e20  */
+:root {
+    --principal: #03a9f4;
+    --secundaria: #0d47a1;
+    --azul-escuro: #0d47a1;
+    --cinza-escuro: #222;
+    --branco: #fff;
+    --verde: #4caf50;
+    --vermelho: #f44336;
+}
+
+::-webkit-scrollbar-track {
+    background-color: whitesmoke;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+  
+::-webkit-scrollbar-thumb {
+    background: rgb(107, 195, 73);
+    /* border-radius: 16px; */
+}

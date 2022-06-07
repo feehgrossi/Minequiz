@@ -1,0 +1,114 @@
+@font-face {
+    font-family: 'mine';
+    src: url('Minecraft.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{   
+    background-image: url('img/fundo_log_cad.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: 'mine';
+    text-shadow: 0.1em 0.1em 0.05em #333;
+
+    
+}
+
+a{
+    color: white;
+    text-decoration: none;
+}
+
+.inicio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+
+.logo{
+    height: 170px;
+    
+}
+
+.botao{
+    background-image: url('img/buttom\ texture.JPG');
+    background-size: contain;
+    height: 40px;
+    width: 350px;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'mine';
+    margin-top: 50px;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+    padding: 0px;
+}
+
+.box{
+    justify-content: center;
+    display: flex;
+}
+      
+.login{
+    width: 400px;
+    height: 400px;
+    justify-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+}
+
+.cadastro{
+    width: 400px;
+    height: 400px;
+    justify-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+}
+
+.inputs{
+    display: flex;
+    justify-content: space-between;
+}
+
+.nick_email{
+    margin: 10px;
+}
+
+.senha{
+    margin: 10px;
+}
+
+.cadastro_fim{
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    
+}
+
+.ipt{
+    background-color: black;
+    border: solid white 2px; ;
+    color: white;
+    height: 40px;
+    width: 350px;
+    display: flex;
+    align-items:flex-start;
+    font-family: 'mine';
+}
+
